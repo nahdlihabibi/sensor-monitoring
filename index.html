@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sensor Monitoring</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Sensor Monitoring</h1>
+  <p class="desc">Pemantauan suhu, kelembapan, cahaya, dan kelembapan tanah secara real-time</p>
+
+  <div class="sensor-data">
+    <p>Suhu Udara: <span id="suhu">0</span> °C</p>
+    <p>Kelembapan Udara: <span id="kelembapan">0</span> %</p>
+    <p>Cahaya: <span id="cahaya">0</span></p>
+    <p>Kelembapan Tanah: <span id="tanah">0</span></p>
+  </div>
+
+  <p>Status Koneksi: <span id="status" style="color:red;">Belum Terhubung</span></p>
+
+  <!-- MQTT -->
+  <script src="mqtt.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
