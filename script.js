@@ -3,49 +3,48 @@ const client = mqtt.connect('wss://rmq.corex.id:8084/mqtt', {
   password: 'qwerty123'
 });
 
-let lastMessageTime = null;
+let lastReceived = Date.now();
 
 client.on('connect', () => {
-  const statusDiv = document.getElementById('status');
-  statusDiv.textContent = '✅ Terhubung ke Broker, menunggu data...';
-  statusDiv.classList.add('connected');
+  document.getElementById('status').textContent = '✅ Terhubung ke Broker, menunggu data...';
+  document.getElementById('status').style.color = 'orange';
+
   client.subscribe('projectgreenhouse');
+
+  // Cek status setiap 5 detik
+  setInterval(() => {
+    const now = Date.now();
+    const diff = now - lastReceived;
+
+    if (diff > 10000) {
+      document.getElementById('status').textContent = '❌ Tidak Ada Data Diterima';
+      document.getElementById('status').style.color = 'red';
+
+      // Kosongkan data
+      document.getElementById('suhu').textContent = '0 °C';
+      document.getElementById('kelembapan').textContent = '0 %';
+      document.getElementById('cahaya').textContent = '0';
+      document.getElementById('tanah').textContent = '0';
+    }
+  }, 5000);
 });
 
 client.on('message', (topic, message) => {
   const data = JSON.parse(message.toString());
-  document.getElementById('suhu').textContent = data.suhu;
-  document.getElementById('kelembapan').textContent = data.kelembapan;
+
+  document.getElementById('suhu').textContent = `${data.suhu} °C`;
+  document.getElementById('kelembapan').textContent = `${data.kelembapan} %`;
   document.getElementById('cahaya').textContent = data.cahaya;
   document.getElementById('tanah').textContent = data.tanah;
 
-  lastMessageTime = Date.now();
-  updateStatus(true);
+  // Update status koneksi & waktu terakhir terima data
+  lastReceived = Date.now();
+  document.getElementById('status').textContent = '✅ Terhubung & Menerima Data';
+  document.getElementById('status').style.color = 'green';
 });
 
-// Cek apakah data terus masuk atau tidak
-setInterval(() => {
-  if (lastMessageTime) {
-    const elapsed = Date.now() - lastMessageTime;
-    if (elapsed > 6000) { // jika lebih dari 6 detik tidak ada data
-      updateStatus(false);
-    }
-  }
-}, 3000);
-
-function updateStatus(terhubung) {
-  const statusDiv = document.getElementById('status');
-  if (terhubung) {
-    statusDiv.textContent = '✅ Terhubung & Menerima Data';
-    statusDiv.classList.add('connected');
-  } else {
-    statusDiv.textContent = '❌ Tidak Ada Data Diterima';
-    statusDiv.classList.remove('connected');
-  }
-}
-
 client.on('error', (err) => {
-  const statusDiv = document.getElementById('status');
-  statusDiv.textContent = '❌ Gagal Terhubung ke Broker';
-  statusDiv.classList.remove('connected');
+  console.error('MQTT Error:', err);
+  document.getElementById('status').textContent = '❌ Gagal Terhubung ke Broker';
+  document.getElementById('status').style.color = 'red';
 });
