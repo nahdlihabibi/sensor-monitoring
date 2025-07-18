@@ -1,48 +1,59 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f4f6f9;
-  color: #333;
+/* RESET */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
+/* PUSATKAN BODY */
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* KOTAK UTAMA */
 .container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #fff;
+  background: white;
+  padding: 30px 35px;
   border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 400px;
   text-align: center;
 }
 
-h1 {
-  margin-bottom: 5px;
-  font-size: 24px;
-  color: #0066cc;
+/* JUDUL */
+h2 {
+  color: #0077cc;
+  margin-bottom: 10px;
 }
 
 .subtitle {
-  margin-bottom: 20px;
   font-size: 14px;
   color: #555;
+  margin-bottom: 25px;
 }
 
-.data-display {
-  margin-bottom: 20px;
-}
-
-.data-item {
-  margin: 10px 0;
+/* LABEL DATA */
+.data-label {
   font-size: 18px;
+  margin: 10px 0;
 }
 
-.label {
-  font-weight: bold;
-}
-
+/* STATUS KONEKSI */
 .status {
+  margin-top: 25px;
+  padding: 10px;
   font-weight: bold;
-  font-size: 16px;
+  border-radius: 8px;
+  background-color: #eee;
   color: red;
+}
+.status.connected {
+  background-color: #d4ffd4;
+  color: green;
 }
