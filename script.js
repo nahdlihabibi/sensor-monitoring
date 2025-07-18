@@ -17,7 +17,7 @@ client.on('connect', () => {
     const diff = now - lastReceived;
 
     if (diff > 10000) {
-      document.getElementById('status').textContent = '❌ Tidak Ada Data dari Device';
+      document.getElementById('status').textContent = '❌ Tidak Ada Data Terkirim';
       document.getElementById('status').style.color = 'red';
 
       // Kosongkan data
