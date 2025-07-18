@@ -1,5 +1,5 @@
 const client = mqtt.connect('wss://rmq.corex.id:8084/mqtt', {
-  username: 'syafri',
+  username: 'ptik',
   password: 'qwerty123'
 });
 
