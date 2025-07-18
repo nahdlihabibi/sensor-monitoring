@@ -1,24 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <title>SENSOR MONITORING</title>
-  <script src="mqtt.min.js"></script>
-  <script src="script.js" defer></script>
-  <style>
-    body { font-family: Arial; text-align: center; }
-    .data { font-size: 1.5em; margin: 10px; }
-    #status { font-weight: bold; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sensor Monitoring</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>SENSOR MONITORING</h1>
-  <p>Pencatatan data suhu, kelembapan, dan kondisi tanah secara real-time</p>
+  <div class="container">
+    <h1>SENSOR MONITORING</h1>
+    <p class="subtitle">Pemantauan data suhu, kelembapan udara, intensitas cahaya, dan kelembapan tanah secara realtime</p>
+    
+    <div class="data-display">
+      <div class="data-item">
+        <span class="label">Suhu Udara:</span>
+        <span id="suhu">0 °C</span>
+      </div>
+      <div class="data-item">
+        <span class="label">Kelembapan Udara:</span>
+        <span id="kelembapan">0 %</span>
+      </div>
+      <div class="data-item">
+        <span class="label">Cahaya:</span>
+        <span id="cahaya">0</span>
+      </div>
+      <div class="data-item">
+        <span class="label">Kelembapan Tanah:</span>
+        <span id="tanah">0</span>
+      </div>
+    </div>
 
-  <div class="data">Suhu Udara: <span id="suhu">0 °C</span></div>
-  <div class="data">Kelembapan Udara: <span id="kelembapan">0 %</span></div>
-  <div class="data">Cahaya: <span id="cahaya">0</span></div>
-  <div class="data">Kelembapan Tanah: <span id="tanah">0</span></div>
+    <p id="status" class="status">❌ Belum Terhubung</p>
+  </div>
 
-  <p>Status Koneksi: <span id="status" style="color:red;">Belum Terhubung</span></p>
+  <script src="mqtt.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
