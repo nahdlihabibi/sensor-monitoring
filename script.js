@@ -1,16 +1,33 @@
 const client = mqtt.connect('wss://rmq.corex.id:8084/mqtt', {
-  username: 'ptik',
+  username: 'syafri',
   password: 'qwerty123'
 });
 
-let lastReceived = Date.now();
-let isConnected = false;
+let lastReceived = 0;
 
 client.on('connect', () => {
-  isConnected = true;
-  document.getElementById('status').textContent = '✅ Terhubung ke Broker, menunggu data...';
+  document.getElementById('status').textContent = '🟠 Terhubung ke Broker, menunggu data...';
   document.getElementById('status').style.color = 'orange';
+
   client.subscribe('projectgreenhouse');
+
+  setInterval(() => {
+    const now = Date.now();
+    if (lastReceived && (now - lastReceived > 3000)) {
+      document.getElementById('status').textContent = '❌ Tidak Ada Data Diterima';
+      document.getElementById('status').style.color = 'red';
+
+      document.getElementById('suhu').textContent = '0 °C';
+      document.getElementById('kelembapan').textContent = '0 %';
+      document.getElementById('cahaya').textContent = '0';
+      document.getElementById('tanah').textContent = '0';
+
+      document.getElementById('ket-suhu').textContent = '-';
+      document.getElementById('ket-kelembapan').textContent = '-';
+      document.getElementById('ket-cahaya').textContent = '-';
+      document.getElementById('ket-tanah').textContent = '-';
+    }
+  }, 1000);
 });
 
 client.on('message', (topic, message) => {
@@ -26,61 +43,28 @@ client.on('message', (topic, message) => {
 
   lastReceived = Date.now();
 
-  // Interpretasi suhu
-  if (data.suhu > 35) {
-    document.getElementById('info-suhu').textContent = '🔥 Suhu terlalu panas';
-  } else if (data.suhu < 20) {
-    document.getElementById('info-suhu').textContent = '❄️ Suhu terlalu dingin';
-  } else {
-    document.getElementById('info-suhu').textContent = '✅ Suhu normal';
-  }
+  // Keterangan suhu
+  const suhu = parseFloat(data.suhu);
+  document.getElementById('ket-suhu').textContent =
+    suhu < 20 ? 'Terlalu Dingin' : suhu > 30 ? 'Terlalu Panas' : 'Normal';
 
-  // Interpretasi kelembapan udara
-  if (data.kelembapan > 80) {
-    document.getElementById('info-kelembapan').textContent = '💧 Udara terlalu lembap';
-  } else if (data.kelembapan < 40) {
-    document.getElementById('info-kelembapan').textContent = '🌬️ Udara kering';
-  } else {
-    document.getElementById('info-kelembapan').textContent = '✅ Kelembapan udara normal';
-  }
+  // Keterangan kelembapan
+  const kelembapan = parseFloat(data.kelembapan);
+  document.getElementById('ket-kelembapan').textContent =
+    kelembapan < 40 ? 'Kering' : kelembapan > 70 ? 'Lembap' : 'Normal';
 
-  // Interpretasi cahaya
-  if (data.cahaya > 3000) {
-    document.getElementById('info-cahaya').textContent = '🌞 Cahaya tinggi';
-  } else if (data.cahaya < 1000) {
-    document.getElementById('info-cahaya').textContent = '🌑 Cahaya rendah';
-  } else {
-    document.getElementById('info-cahaya').textContent = '✅ Cahaya cukup';
-  }
+  // Cahaya
+  const cahaya = parseInt(data.cahaya);
+  document.getElementById('ket-cahaya').textContent =
+    cahaya < 1000 ? 'Gelap' : cahaya > 3000 ? 'Terlalu Terang' : 'Normal';
 
-  // Interpretasi kelembapan tanah
-  if (data.tanah > 3000) {
-    document.getElementById('info-tanah').textContent = '🌵 Tanah sangat kering';
-  } else if (data.tanah < 1500) {
-    document.getElementById('info-tanah').textContent = '💦 Tanah sangat basah';
-  } else {
-    document.getElementById('info-tanah').textContent = '✅ Kelembapan tanah normal';
-  }
+  // Tanah
+  const tanah = parseInt(data.tanah);
+  document.getElementById('ket-tanah').textContent =
+    tanah < 1500 ? 'Basah' : tanah > 3500 ? 'Kering' : 'Normal';
 });
 
-client.on('close', () => {
-  isConnected = false;
-  document.getElementById('status').textContent = '❌ Terputus dari Broker';
-  document.getElementById('status').style.color = 'red';
-
-  document.getElementById('suhu').textContent = '0 °C';
-  document.getElementById('kelembapan').textContent = '0 %';
-  document.getElementById('cahaya').textContent = '0';
-  document.getElementById('tanah').textContent = '0';
-
-  document.getElementById('info-suhu').textContent = 'Tidak ada data';
-  document.getElementById('info-kelembapan').textContent = 'Tidak ada data';
-  document.getElementById('info-cahaya').textContent = 'Tidak ada data';
-  document.getElementById('info-tanah').textContent = 'Tidak ada data';
-});
-
-client.on('error', (err) => {
-  console.error('MQTT Error:', err);
-  document.getElementById('status').textContent = '❌ Gagal Terhubung ke Broker';
+client.on('error', () => {
+  document.getElementById('status').textContent = '❌ Tidak Terhubung ke Broker';
   document.getElementById('status').style.color = 'red';
 });
